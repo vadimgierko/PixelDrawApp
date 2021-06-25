@@ -1,13 +1,6 @@
-const style = {
-  backgroundColor: "blue",
-  width: "20px",
-  height: "20px",
-  border: "1px solid white"
-};
-
 function Pixel(props) {
   return (
-    <td style={style}>{props.value}</td>
+    <td className="pixel" style={props.style} onClick={props.onClick} ></td>
   );
 }
 
@@ -15,13 +8,22 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pixels: Array(10).fill(null),
+      pixels: Array(10).fill(Array(10).fill(null)),
     }
   }
   
   render() {
     console.log(this.state.pixels);
-    const pixels = this.state.pixels.map(pixel => <td style={style}></td>);
+    const pixels = this.state.pixels.map((row, i) =>
+                                         <tr key={i} >
+                                           {row.map((pixel, i) =>
+                                                    <Pixel
+                                                      key={i}
+                                                      style={{backgroundColor: "red"}}
+                                                     />
+                                                   )}
+                                         </tr>
+                                        );
     return (
       <div className="pixels">
         {pixels}
