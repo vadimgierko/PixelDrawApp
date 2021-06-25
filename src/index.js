@@ -1,3 +1,7 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+
 function Pixel(props) {
   return (
     <td className="pixel" id={props.id} style={props.style} onClick={props.onClick} ></td>
