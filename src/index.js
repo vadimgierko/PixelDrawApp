@@ -12,59 +12,64 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //pixels: Array(10).fill(Array(10).fill({id: "", color: ""})),
-      pixels: Array(9).fill(null),
+      pixels: Array(100).fill(null),
     }
   }
   
   renderPixel(i) {
     return (
-      <Pixel id={i} style={{backgroundColor: this.state.pixels[i]}} onClick={() => this.changeColor(i)} />
+      <Pixel
+        id={i}
+        style={{backgroundColor: this.state.pixels[i]}}
+        onClick={() => this.changeColor(i)}
+      />
     );
   }
   
   renderRow(i) {
     return (
       <tr>
-        {this.renderPixel(0 + i*3)}
-        {this.renderPixel(1 + i*3)}
-        {this.renderPixel(2 + i*3)}
+        {this.renderPixel(0 + i*10)}
+        {this.renderPixel(1 + i*10)}
+        {this.renderPixel(3 + i*10)}
+        {this.renderPixel(4 + i*10)}
+        {this.renderPixel(5 + i*10)}
+        {this.renderPixel(6 + i*10)}
+        {this.renderPixel(7 + i*10)}
+        {this.renderPixel(8 + i*10)}
+        {this.renderPixel(9 + i*10)}
       </tr>
     );
   }
   
   changeColor(i) {
+    console.log(i);
     const pixels = this.state.pixels.slice();
     pixels[i] = this.props.color;
     this.setState({pixels: pixels});
   }
   
   render() {
-    //const rows = this.state.pixels.map((row, i) => <tr key={i} ></tr>);
-    //const pixels = rows.map((pixel, i) => <Pixel key={i} />);
-    /*
-    const pixels = this.state.pixels.map((row, i) =>
-                                         <tr key={i} >
-                                           {row.map((pixel, j) =>
-                                                    <Pixel
-                                                      id={i + j}
-                                                      key={j}
-                                                      style={{
-                                                        backgroundColor: this.state.pixels[i][j].color,
-                                                      }}
-                                                      onClick={() => this.changeColor(i, j, "blue").bind(this)}
-                                                     />
-                                                   )}
-                                         </tr>
-                                        );
-    */
+    
     console.log(this.state);
+    const canvas = this.state.pixels.slice();
+    console.log(canvas);
+
     return (
-      <div className="pixels">
-        {this.renderRow(0)}
-        {this.renderRow(1)}
-        {this.renderRow(2)}
-      </div>
+      <table className="pixels">
+        <tbody>
+          {this.renderRow(0)}
+          {this.renderRow(1)}
+          {this.renderRow(2)}
+          {this.renderRow(3)}
+          {this.renderRow(4)}
+          {this.renderRow(5)}
+          {this.renderRow(6)}
+          {this.renderRow(7)}
+          {this.renderRow(8)}
+          {this.renderRow(9)}
+        </tbody>
+      </table>
     );
   }
 }
@@ -77,7 +82,6 @@ class App extends React.Component {
     }
   }
   setColor(e) {
-    //console.log(e.target.value);
     const color = e.target.value;
     this.setState({color: color}, console.log(this.state.color));
   }
