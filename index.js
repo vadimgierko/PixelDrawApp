@@ -7,7 +7,7 @@ const style = {
 
 function Pixel(props) {
   return (
-    <td style={style}></td>
+    <td style={style}>{props.value}</td>
   );
 }
 
@@ -15,15 +15,16 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      
+      pixels: Array(10).fill(null),
     }
   }
+  
   render() {
+    console.log(this.state.pixels);
+    const pixels = this.state.pixels.map(pixel => <td style={style}></td>);
     return (
-      <div className="canvas">
-        <Pixel />
-        <Pixel />
-        <Pixel />
+      <div className="pixels">
+        {pixels}
       </div>
     );
   }
