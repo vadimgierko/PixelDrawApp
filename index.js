@@ -9,7 +9,7 @@ class Canvas extends React.Component {
     super(props);
     this.state = {
       //pixels: Array(10).fill(Array(10).fill({id: "", color: ""})),
-      pixels: Array(9).fill("red"),
+      pixels: Array(9).fill(null),
     }
   }
   
@@ -31,7 +31,7 @@ class Canvas extends React.Component {
   
   changeColor(i) {
     const pixels = this.state.pixels.slice();
-    pixels[i] = "blue";
+    pixels[i] = this.props.color;
     this.setState({pixels: pixels});
   }
   
@@ -66,10 +66,22 @@ class Canvas extends React.Component {
 }
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      color: "",
+    }
+  }
+  setColor(e) {
+    //console.log(e.target.value);
+    const color = e.target.value;
+    this.setState({color: color}, console.log(this.state.color));
+  }
   render() {
     return (
-      <div className="canvas">
-        <Canvas />
+      <div className="app">
+        <input type="color" onChange={this.setColor.bind(this)} />
+        <Canvas color={this.state.color} />
       </div>
     );
   }
