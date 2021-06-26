@@ -4,7 +4,12 @@ import './index.css';
 
 function Pixel(props) {
   return (
-    <td className="pixel" id={props.id} style={props.style} onClick={props.onClick} ></td>
+    <td
+      className="pixel"
+      id={props.id}
+      style={props.style}
+      onClick={props.onClick}
+    ></td>
   );
 }
 
@@ -12,40 +17,38 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pixels: Array(100).fill(null),
+      pixels: Array(15).fill(Array(15).fill(null)),
     }
   }
   
-  renderPixel(i) {
+  renderPixel(r, c) {
     return (
       <Pixel
-        id={i}
-        style={{backgroundColor: this.state.pixels[i]}}
-        onClick={() => this.changeColor(i)}
+        id={c + r*10}
+        style={{backgroundColor: this.state.pixels[r][c]}}
+        onClick={() => this.changeColor(r, c)}
       />
     );
   }
-  
-  renderRow(i) {
+
+  renderRow(r) {
+    const row = this.state.pixels[r];
     return (
       <tr>
-        {this.renderPixel(0 + i*10)}
-        {this.renderPixel(1 + i*10)}
-        {this.renderPixel(3 + i*10)}
-        {this.renderPixel(4 + i*10)}
-        {this.renderPixel(5 + i*10)}
-        {this.renderPixel(6 + i*10)}
-        {this.renderPixel(7 + i*10)}
-        {this.renderPixel(8 + i*10)}
-        {this.renderPixel(9 + i*10)}
+        {row.map((pixel, index) => this.renderPixel(r, index))}
       </tr>
     );
   }
-  
-  changeColor(i) {
-    console.log(i);
+
+  changeColor(r, c) {
+    console.log("change color fun work");
+    console.log(r, c);
     const pixels = this.state.pixels.slice();
-    pixels[i] = this.props.color;
+    const row = pixels[r];
+    //pixels[r][c] = this.props.color;
+    row[c] = this.props.color;
+    console.log(row[c]);
+    console.log(pixels[r][c])
     this.setState({pixels: pixels});
   }
   
@@ -58,16 +61,7 @@ class Canvas extends React.Component {
     return (
       <table className="pixels">
         <tbody>
-          {this.renderRow(0)}
-          {this.renderRow(1)}
-          {this.renderRow(2)}
-          {this.renderRow(3)}
-          {this.renderRow(4)}
-          {this.renderRow(5)}
-          {this.renderRow(6)}
-          {this.renderRow(7)}
-          {this.renderRow(8)}
-          {this.renderRow(9)}
+          {canvas.map((row, index) => this.renderRow(index))}
         </tbody>
       </table>
     );
