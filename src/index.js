@@ -17,51 +17,51 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pixels: Array(15).fill(Array(15).fill(null)),
+      pixels: Array(2500).fill(null),
     }
   }
   
-  renderPixel(r, c) {
+  renderPixel(i) {
     return (
       <Pixel
-        id={c + r*10}
-        style={{backgroundColor: this.state.pixels[r][c]}}
-        onClick={() => this.changeColor(r, c)}
+        id={i}
+        style={{backgroundColor: this.state.pixels[i]}}
+        onClick={() => this.changeColor(i)}
       />
     );
   }
 
-  renderRow(r) {
-    const row = this.state.pixels[r];
-    return (
-      <tr>
-        {row.map((pixel, index) => this.renderPixel(r, index))}
-      </tr>
-    );
-  }
-
-  changeColor(r, c) {
+  changeColor(i) {
     console.log("change color fun work");
-    console.log(r, c);
+    console.log(i);
     const pixels = this.state.pixels.slice();
-    const row = pixels[r];
-    //pixels[r][c] = this.props.color;
-    row[c] = this.props.color;
-    console.log(row[c]);
-    console.log(pixels[r][c])
+    pixels[i] = this.props.color;
+    console.log(pixels[i]);
     this.setState({pixels: pixels});
   }
   
   render() {
     
     console.log(this.state);
-    const canvas = this.state.pixels.slice();
-    console.log(canvas);
-
+    const pixels = this.state.pixels.slice();
+    console.log(pixels);
+    let rows = [];
+    
+    for (let r = 0; r < 50; r++) {
+      rows[r] = [];
+      for (let i = 0; i < 50; i++) {
+        rows[r].push(pixels[i + r*50]);
+      }
+    }
+    console.log(rows);
     return (
       <table className="pixels">
         <tbody>
-          {canvas.map((row, index) => this.renderRow(index))}
+          {rows.map((row, r) => (
+            <tr>
+              {row.map((pixel, i) => this.renderPixel(i + r*50))}
+            </tr>
+          ))}
         </tbody>
       </table>
     );
