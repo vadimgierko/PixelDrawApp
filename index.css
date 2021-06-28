@@ -1,3 +1,21 @@
+body {
+  background-color: black;
+  color: white;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  width: 100%;
+  height: auto;
+  align-items: center;
+  align-content: center;
+  
+  text-align: center;
+}
+
 .pixel {
   width: 10px;
   height: 10px;
@@ -5,5 +23,6 @@
 }
 
 .pixels {
+  background-color: white;
   border-collapse: collapse;
 }
