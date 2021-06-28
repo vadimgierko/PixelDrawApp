@@ -59,7 +59,7 @@ class Canvas extends React.Component {
             </tr>
           ))}
         </tbody>
-      </table>
+       </table>
     );
   }
 }
@@ -75,16 +75,27 @@ class App extends React.Component {
     const color = e.target.value;
     this.setState({color: color}, console.log(this.state.color));
   }
+  download() {
+    html2canvas(document.querySelector('.pixels')).then(canvas => {
+         document.getElementById("downloaded-picture").appendChild(canvas);
+      });
+  }
   render() {
     return (
       <div className="app">
         <h1>PIXEL DRAWING APP</h1>
         <h2>Pick color: <input type="color" onChange={this.setColor.bind(this)} /></h2>
+        <button
+          type="button"
+          onClick={this.download}
+        >download image</button>
         <Canvas color={this.state.color} />
+        
         <footer>
           <p>designed and programmed by Vadim Gierko | 2021</p>
           <p><a target="_blank" href="https://en.wikipedia.org/wiki/Pixel_art">Read more about pixel art</a></p>
         </footer>
+        <div id="downloaded-picture"></div>
       </div>
     );
   }
