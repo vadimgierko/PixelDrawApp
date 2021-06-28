@@ -13,7 +13,7 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pixels: Array(2500).fill(null),
+      pixels: Array(1600).fill(null),
     }
   }
   
@@ -43,10 +43,10 @@ class Canvas extends React.Component {
     console.log(pixels);
     let rows = [];
     
-    for (let r = 0; r < 50; r++) {
+    for (let r = 0; r < 40; r++) {
       rows[r] = [];
-      for (let i = 0; i < 50; i++) {
-        rows[r].push(pixels[i + r*50]);
+      for (let i = 0; i < 40; i++) {
+        rows[r].push(pixels[i + r*40]);
       }
     }
     console.log(rows);
@@ -55,7 +55,7 @@ class Canvas extends React.Component {
         <tbody>
           {rows.map((row, r) => (
             <tr>
-              {row.map((pixel, i) => this.renderPixel(i + r*50))}
+              {row.map((pixel, i) => this.renderPixel(i + r*40))}
             </tr>
           ))}
         </tbody>
@@ -78,8 +78,13 @@ class App extends React.Component {
   render() {
     return (
       <div className="app">
-        <input type="color" onChange={this.setColor.bind(this)} />
+        <h1>PIXEL DRAWING APP</h1>
+        <h2>Pick color: <input type="color" onChange={this.setColor.bind(this)} /></h2>
         <Canvas color={this.state.color} />
+        <footer>
+          <p>designed and programmed by Vadim Gierko | 2021</p>
+          <p><a target="_blank" href="https://en.wikipedia.org/wiki/Pixel_art">Read more about pixel art</a></p>
+        </footer>
       </div>
     );
   }
