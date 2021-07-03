@@ -97,6 +97,7 @@ class App extends React.Component {
   }
 
   /* turning off download function:
+
   download() {
     html2canvas(document.querySelector('.pixels')).then(canvas => {
          document.getElementById("downloaded-picture").appendChild(canvas);
@@ -117,13 +118,14 @@ class App extends React.Component {
       <div className="app">
         <h1>PIXEL DRAWING APP</h1>
         <h2>Pick color: <input type="color" onChange={this.setColor.bind(this)} /></h2>
-        
+
         <Canvas color={this.state.color} />
         
         <footer>
           <p>designed and programmed by Vadim Gierko | 2021</p>
           <p><a target="_blank" href="https://en.wikipedia.org/wiki/Pixel_art">Read more about pixel art</a></p>
         </footer>
+        <div id="downloaded-picture"></div>
       </div>
     );
   }
