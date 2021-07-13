@@ -7,5 +7,6 @@
 .pixels {
   background-color: white;
   border-collapse: collapse;
+  width: 400px;
 }
 

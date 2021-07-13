@@ -126,15 +126,25 @@ class App extends React.Component {
             Drawing Mode
           </button>
         </div>
-
-        <div className="app text-center">
-          <p>Pick color: <input type="color" onChange={this.setColor.bind(this)} /></p>
-          
-          <div className="col align-self-center"><Canvas color={this.state.color} /></div>
-          
-          <footer>
-            <p>designed and programmed by Vadim Gierko | 2021</p>
-          </footer>
+        <div className="row">
+          <div className="col"></div>
+          <div className="col">
+            <div className="app">
+              <p className="text-center mt-3">
+                Pick color:
+                <input
+                  type="color"
+                  onChange={this.setColor.bind(this)}
+                  className="ml-3"
+                />
+              </p>
+              <Canvas color={this.state.color} />
+            </div>
+          </div>
+          <div className="col"></div>
+        </div>
+        <div className="fixed-bottom text-center">
+          <p>designed and programmed by Vadim Gierko | 2021</p>
         </div>
       </div>
     );
