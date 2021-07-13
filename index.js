@@ -96,34 +96,46 @@ class App extends React.Component {
     this.setState({color: color}, console.log(this.state.color));
   }
 
-  /* turning off download function:
-  download() {
-    html2canvas(document.querySelector('.pixels')).then(canvas => {
-         document.getElementById("downloaded-picture").appendChild(canvas);
-      });
-  }
-
-  was in render() before Canvas:
-  <button
-    type="button"
-     onClick={this.download}
-  >download image</button>
-
-  was after footer: <div id="downloaded-picture"></div>
-  */
-
   render() {
     return (
-      <div className="app">
-        <h1>PIXEL DRAWING APP</h1>
-        <h2>Pick color: <input type="color" onChange={this.setColor.bind(this)} /></h2>
-        
-        <Canvas color={this.state.color} />
-        
-        <footer>
-          <p>designed and programmed by Vadim Gierko | 2021</p>
-          <p><a target="_blank" href="https://en.wikipedia.org/wiki/Pixel_art">Read more about pixel art</a></p>
-        </footer>
+      <div className="container">
+        <div className="navbar .form-inline bg-dark justify-content-between text-white my-1 mx-n3 rounded">
+          <div className="col">
+            <span className="navbar-brand mb-0 ml-n3 h1 font-weight-bold text-white">
+              <a
+                href="#"
+                className="text-reset"
+              >
+                Pixel Drawing App
+              </a>
+            </span>
+          </div>
+          <span className="mx-3" id="about-app-btn">About app</span>
+          <span
+            className="mx-3"
+            id="more-about-pixel-art-btn"
+          >
+            <a target="_blank" href="https://en.wikipedia.org/wiki/Pixel_art" className="text-reset">More about pixel art</a>
+          </span>
+          <span className="mx-3" id="tutorial-btn">Quick App Tutorial</span>
+          <button
+            type="button"
+            className="btn btn-outline-light ml-3"
+            id="create-new-mind-map-btn"
+          >
+            Drawing Mode
+          </button>
+        </div>
+
+        <div className="app text-center">
+          <p>Pick color: <input type="color" onChange={this.setColor.bind(this)} /></p>
+          
+          <div className="col align-self-center"><Canvas color={this.state.color} /></div>
+          
+          <footer>
+            <p>designed and programmed by Vadim Gierko | 2021</p>
+          </footer>
+        </div>
       </div>
     );
   }
