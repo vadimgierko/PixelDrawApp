@@ -2,6 +2,7 @@
 
 // if you want to clear storage for this app (all saved pictures) uncomment the code below:
 //window.localStorage.removeItem("pixel-pictures");
+//console.log(window.localStorage.getItem("pixel-pictures"));
 
 function Pixel(props) {
   return (
@@ -23,6 +24,7 @@ class App extends React.Component {
       pixels: Array(1600).fill(null),
       isMouseDown: false,
       color: "",
+      name: "",
     }
   }
   renderPixel(i) {
@@ -58,18 +60,50 @@ class App extends React.Component {
     this.setState({color: color});
   }
   save() {
-    const pictureName = prompt("Input the name for your picture. It will be saved in your browser under this name.");
-    const savedPicture = this.state.pixels.slice();
-    if (window.localStorage.getItem("pixel-pictures")) {
-      const savedPixelPictures = JSON.parse(window.localStorage.getItem("pixel-pictures")); // return an array with objects inside
-      savedPixelPictures.push({name: pictureName, pixels: savedPicture});
-      window.localStorage.setItem("pixel-pictures", JSON.stringify(savedPixelPictures));
-    } else {
-      window.localStorage.setItem("pixel-pictures", JSON.stringify([{name: pictureName, pixels: savedPicture}]));
+    if (!this.state.name) {
+      const pictureName = prompt("Input the name for your picture. It will be saved in your browser under this name.");
+      const savedPicture = {name: pictureName, pixels: this.state.pixels};
+      this.setState({name: pictureName});
+      if (window.localStorage.getItem("pixel-pictures")) {
+        const savedPixelPictures = JSON.parse(window.localStorage.getItem("pixel-pictures")); // return an array with objects inside
+        savedPixelPictures.push(savedPicture);
+        window.localStorage.setItem("pixel-pictures", JSON.stringify(savedPixelPictures));
+      } else {
+        window.localStorage.setItem("pixel-pictures", JSON.stringify([savedPicture]));
+      }
+      alert("You saved a new pixel picture: " + pictureName + "! If you want to open it in the future, press open button and input the name.");
+    } else { // if this is an existing (saved) picture, which means that it has a name automatically (for example set after opening):
+      const savedPixelPictures = JSON.parse(window.localStorage.getItem("pixel-pictures")); // we are sure that there are such an item with an array inside
+      // search the previously saved version of this picture by filtering names:
+      for (let i = 0; i < savedPixelPictures.length; i++) {
+        let pictureNameWeSearchFor = this.state.name;
+        if (savedPixelPictures[i].name === pictureNameWeSearchFor) {
+            savedPixelPictures[i].pixels = this.state.pixels; // or Object.assign...
+            // and now overwrite it:
+            window.localStorage.setItem("pixel-pictures", JSON.stringify(savedPixelPictures));
+        }
+      }
     }
-    alert("You saved a new pixel picture: " + pictureName + "! If you want to open it in the future, press open button and input the name.");
+  }
+  new() {
+    // ask if the mind map need saving?
+    let needSave = confirm("Do you want to save changes to the current picture?");
+    if (needSave) {
+        this.save();
+    }
+    this.setState({
+      pixels: Array(1600).fill(null),
+      isMouseDown: false,
+      color: "",
+      name: "",
+    });
   }
   open() {
+    // ask if the picture need saving?
+    let needSave = confirm("Do you want to save changes to the current picture?");
+    if (needSave) {
+      this.save();
+    }
     if (window.localStorage.getItem("pixel-pictures")) {
       // check the names of saved pixel pictures in storage:
       let savedPixelPicturesNames = [];
@@ -85,7 +119,10 @@ class App extends React.Component {
         for (let i = 0; i < savedPixelPictures.length; i++) {
           let savedPictureName = savedPixelPictures[i].name;
           if (savedPictureName === inputedPictureName) {
-            this.setState({pixels: savedPixelPictures[i].pixels});
+            this.setState({
+              name: savedPixelPictures[i].name,
+              pixels: savedPixelPictures[i].pixels
+            });
           }
         }
       } else {
@@ -132,8 +169,12 @@ class App extends React.Component {
           >Open <i className="bi bi-folder2-open"></i></button>
           <button
             className="btn btn-outline-secondary mx-3 text-white"
+            onClick={() => this.new()}
+          >New <i className="bi bi-image"></i></button>
+          <button
+            className="btn btn-outline-secondary mx-3 text-white"
             onClick={() => this.showTemplatePicture()}
-          >Show template <i className="bi bi-image"></i></button>
+          >Show template</button>
           <button
             className="btn btn-outline-secondary mx-3 text-white"
             id="about-app-btn"
