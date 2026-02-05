@@ -8,7 +8,6 @@ If you want to color bigger area, click at any pixel and then drag the mouse whi
 Enjoy!
 
 Technologies used in the app:
-- React,
-- Bootstrap (pure)
-
-PS. Want to save your pixel drawing? Take a screenshot! Maybe it's not the most ellegant way, but I'll post another version of this app written with using p5.js library and it would allow you to click on canvas and save a PNG file, so the quality and sizing will be awesome. Also I'm working on extra features for the app, so stay tuned!
+- React (inside HTML file)
+- JavaScript
+- Bootstrap
