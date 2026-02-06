@@ -31,7 +31,8 @@ class App extends React.Component {
     return (
       <Pixel
         id={i}
-        style={{backgroundColor: this.state.pixels[i]}}
+        key={`pixel-${i}`}
+        style={{ backgroundColor: this.state.pixels[i] }}
         onMouseDown={() => this.handleMouseDown(i)}
         onMouseMove={() => this.handleMouseMove(i)}
         onMouseUp={() => this.handleMouseUp(i)}
@@ -39,11 +40,11 @@ class App extends React.Component {
     );
   }
   handleMouseDown(i) {
-    this.setState({isMouseDown: true});
+    this.setState({ isMouseDown: true });
     this.changeColor(i);
   }
   handleMouseUp(i) {
-    this.setState({isMouseDown: false});
+    this.setState({ isMouseDown: false });
   }
   handleMouseMove(i) {
     if (this.state.isMouseDown) {
@@ -53,44 +54,61 @@ class App extends React.Component {
   changeColor(i) {
     const pixels = this.state.pixels.slice();
     pixels[i] = this.state.color;
-    this.setState({pixels: pixels});
+    this.setState({ pixels: pixels });
   }
   setColor(e) {
     const color = e.target.value;
-    this.setState({color: color});
+    this.setState({ color: color });
+  }
+  getSavedPictures() {
+    return JSON.parse(localStorage.getItem("pixel-pictures")) || [];
   }
   save() {
+    const savedPixelPictures = this.getSavedPictures();
+
+    // NEW picture
     if (!this.state.name) {
-      const pictureName = prompt("Input the name for your picture. It will be saved in your browser under this name.");
-      const savedPicture = {name: pictureName, pixels: this.state.pixels};
-      this.setState({name: pictureName});
-      if (window.localStorage.getItem("pixel-pictures")) {
-        const savedPixelPictures = JSON.parse(window.localStorage.getItem("pixel-pictures")); // return an array with objects inside
-        savedPixelPictures.push(savedPicture);
-        window.localStorage.setItem("pixel-pictures", JSON.stringify(savedPixelPictures));
-      } else {
-        window.localStorage.setItem("pixel-pictures", JSON.stringify([savedPicture]));
+      const pictureName = prompt(
+        "Input the name for your picture. It will be saved in your browser under this name."
+      );
+
+      if (!pictureName) return;
+
+      const exists = savedPixelPictures.some(p => p.name === pictureName);
+      if (exists) {
+        alert("A picture with this name already exists.");
+        return;
       }
-      alert("You saved a new pixel picture: " + pictureName + "! If you want to open it in the future, press open button and input the name.");
-    } else { // if this is an existing (saved) picture, which means that it has a name automatically (for example set after opening):
-      const savedPixelPictures = JSON.parse(window.localStorage.getItem("pixel-pictures")); // we are sure that there are such an item with an array inside
-      // search the previously saved version of this picture by filtering names:
-      for (let i = 0; i < savedPixelPictures.length; i++) {
-        let pictureNameWeSearchFor = this.state.name;
-        if (savedPixelPictures[i].name === pictureNameWeSearchFor) {
-            savedPixelPictures[i].pixels = this.state.pixels; // or Object.assign...
-            // and now overwrite it:
-            window.localStorage.setItem("pixel-pictures", JSON.stringify(savedPixelPictures));
-        }
+
+      const savedPicture = {
+        name: pictureName,
+        pixels: this.state.pixels.slice()
+      };
+
+      savedPixelPictures.push(savedPicture);
+      localStorage.setItem("pixel-pictures", JSON.stringify(savedPixelPictures));
+      this.setState({ name: pictureName });
+
+      alert(`You saved a new pixel picture: ${pictureName}!`);
+      return;
+    }
+
+    // UPDATE existing picture
+    for (let i = 0; i < savedPixelPictures.length; i++) {
+      if (savedPixelPictures[i].name === this.state.name) {
+        savedPixelPictures[i].pixels = this.state.pixels.slice();
+        localStorage.setItem("pixel-pictures", JSON.stringify(savedPixelPictures));
+        break;
       }
     }
   }
+
   new() {
-    // ask if the mind map need saving?
-    let needSave = confirm("Do you want to save changes to the current picture?");
+    const needSave = confirm("Do you want to save changes to the current picture?");
     if (needSave) {
-        this.save();
+      this.save();
     }
+
     this.setState({
       pixels: Array(1600).fill(null),
       isMouseDown: false,
@@ -98,51 +116,49 @@ class App extends React.Component {
       name: "",
     });
   }
+
   open() {
-    // ask if the picture need saving?
-    let needSave = confirm("Do you want to save changes to the current picture?");
+    const needSave = confirm("Do you want to save changes to the current picture?");
     if (needSave) {
       this.save();
     }
-    if (window.localStorage.getItem("pixel-pictures")) {
-      // check the names of saved pixel pictures in storage:
-      let savedPixelPicturesNames = [];
-      const savedPixelPictures = JSON.parse(window.localStorage.getItem("pixel-pictures")); // return an array with objects inside
-      for (let i = 0; i < savedPixelPictures.length; i++) {
-        let savedPictureName = savedPixelPictures[i].name;
-        savedPixelPicturesNames.push(savedPictureName);
-      }
-      // ask for name:
-      let inputedPictureName = prompt(`Input the name of your saved picture. There are the names of saved pixel pictures in your storage: ${savedPixelPicturesNames}.`);
-      // search the picture by filtering names:
-      if (inputedPictureName) {
-        for (let i = 0; i < savedPixelPictures.length; i++) {
-          let savedPictureName = savedPixelPictures[i].name;
-          if (savedPictureName === inputedPictureName) {
-            this.setState({
-              name: savedPixelPictures[i].name,
-              pixels: savedPixelPictures[i].pixels
-            });
-          }
-        }
-      } else {
-        alert("You need to input some saved picture name... or nothing will be opened...");
-      }
-    } else {
-      alert("There is no saved pixel pictures yet... Create a new one, save it and then try to open it ;-)");
+
+    const savedPixelPictures = this.getSavedPictures();
+    if (!savedPixelPictures.length) {
+      alert("There is no saved pixel pictures yet...");
+      return;
     }
+
+    const names = savedPixelPictures.map(p => p.name);
+    const inputedPictureName = prompt(
+      `Input the name of your saved picture. Available: ${names.join(", ")}`
+    );
+
+    if (!inputedPictureName) return;
+
+    const picture = savedPixelPictures.find(p => p.name === inputedPictureName);
+    if (!picture) {
+      alert("No picture with this name found.");
+      return;
+    }
+
+    this.setState({
+      name: picture.name,
+      pixels: picture.pixels.slice()
+    });
   }
+
   showTemplatePicture() {
-    this.setState({pixels: templatePicture});
+    this.setState({ pixels: templatePicture, name: "" });
   }
   render() {
     const pixels = this.state.pixels.slice();
-    let rows = [];
-    
+    const rows = [];
+
     for (let r = 0; r < 40; r++) {
       rows[r] = [];
       for (let i = 0; i < 40; i++) {
-        rows[r].push(pixels[i + r*40]);
+        rows[r].push(pixels[i + r * 40]);
       }
     }
 
@@ -162,7 +178,8 @@ class App extends React.Component {
           <button
             className="btn btn-outline-secondary mx-3 text-white"
             onClick={() => this.save()}
-          >Save <i className="bi bi-bookmark"></i></button>
+          >Save <i className="bi bi-bookmark"></i>
+          </button>
           <button
             className="btn btn-outline-secondary mx-3 text-white"
             onClick={() => this.open()}
@@ -179,15 +196,16 @@ class App extends React.Component {
             className="btn btn-outline-secondary mx-3 text-white"
             id="about-app-btn"
             onClick={() => {
-              alert("Pixel Drawing App allows you to create pictures by filling pixels (squares on the board below) with color. All you need is to pick the color from  color picker and then click on any pixel on the board to fill it with the color. If you want to color bigger area, click at any pixel and then drag the mouse while it is pressed above pixels you want to fill with color. Enjoy!");
+              alert("Pixel Drawing App is the old app of mine which allows you to create pictures by filling pixels (squares on the board below) with color. All you need is to pick the color from  color picker and then click on any pixel on the board to fill it with the color. If you want to color bigger area, click at any pixel and then drag the mouse while it is pressed above pixels you want to fill with color. Enjoy!");
             }}
-          >About app</button>
+          >About</button>
           <a target="_blank" href="https://en.wikipedia.org/wiki/Pixel_art" className="btn btn-outline-secondary mx-3 text-white text-reset">More about pixel art</a>
         </div>
         <div className="row">
           <div className="col"></div>
           <div className="col">
             <div className="app">
+              {this.state.name && <h1 className="text-center">{this.state.name}</h1>}
               <p className="text-center mt-3">
                 Pick color:
                 <input
@@ -199,8 +217,8 @@ class App extends React.Component {
               <table className="pixels">
                 <tbody>
                   {rows.map((row, r) => (
-                    <tr>
-                      {row.map((pixel, i) => this.renderPixel(i + r*40))}
+                    <tr key={`row-${r}`}>
+                      {row.map((pixel, i) => this.renderPixel(i + r * 40))}
                     </tr>
                   ))}
                 </tbody>
@@ -210,7 +228,7 @@ class App extends React.Component {
           <div className="col"></div>
         </div>
         <div className="fixed-bottom text-center">
-          <p>designed and programmed by Vadim Gierko | 2021</p>
+          <p>&copy; 2021 <a href="" target="_blank">Vadim Gierko</a></p>
         </div>
       </div>
     );
